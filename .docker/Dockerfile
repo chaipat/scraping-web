@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=074531296166.dkr.ecr.ap-southeast-1.amazonaws.com/ballnaja-football:runtime-v1.0
+ARG BASE_IMAGE=local:runtime-v1.0
 
 FROM ${BASE_IMAGE}
 

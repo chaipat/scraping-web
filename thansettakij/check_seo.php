@@ -2,10 +2,10 @@
 include_once('../simple_html_dom.php');
 
 // $get_data_url = 'https://www.thansettakij.com/';
-$get_data_url = 'https://www.thansettakij.com/thailand-elections/election-analysis/562937';
+// $get_data_url = 'https://www.thansettakij.com/thailand-elections/election-analysis/562937';
 
 $id = 562937;
-
+$i = 0;
 $item = array();
 
 $now = date('c');
@@ -29,6 +29,11 @@ if(isset($_GET['folder'])){
 
 $folder = 'thansettakij-'.$folder;
 
+
+echo $url."<br>";
+echo $folder."<br>";
+// die();
+
 if(!is_dir('image')){
 	mkdir('image');
 }
@@ -36,31 +41,40 @@ if(!is_dir('image')){
 $item['url'] = $url;
 
 // get DOM from URL or file
-$html = file_get_html($get_data_url);
+$html = file_get_html($url);
 
 // find title
 echo "Title<br>";
-foreach($html->find('title') as $e)
+foreach($html->find('title') as $e){
     echo $e->innertext . '<br>';
+    $item['title'] = $e->innertext;
+}
+
 echo "<hr>";
 
 // find description
 echo "Description<br>";
-foreach($html->find('meta[name=description]') as $e)
+foreach($html->find('meta[name=description]') as $e){
     echo $e->content . '<br>';
+    $item['description'] = $e->content;
+}
 echo "<hr>";
 
 // find keywords
 echo "Keywords<br>";
-foreach($html->find('meta[name=keywords]') as $e)
+foreach($html->find('meta[name=keywords]') as $e){
     echo $e->content . '<br>';
+    $item['keywords'] = $e->content;
+}
 echo "<hr>";
 
 
 // find viewport
 echo "viewport<br>";
-foreach($html->find('meta[name=viewport]') as $e)
+foreach($html->find('meta[name=viewport]') as $e){
     echo $e->content . '<br>';
+    $item['viewport'] = $e->content;
+}
 echo "<hr>";
 
 
@@ -70,6 +84,7 @@ $texth1 = $texth2 = $texth3 = $texth4 = $texth5 = '';
 $num = 0;
 foreach($html->find('h1') as $e){
     $texth1 .= '<li>' . $e->plaintext . '</li>';
+    $item['h1'][] = $e->plaintext;
     $num++;
 }
 echo "H1($num)<br>";
@@ -79,6 +94,7 @@ echo $texth1;
 $num = 0;
 foreach($html->find('h2') as $e){
     $texth2 .= '<li>' . $e->plaintext . '</li>';
+    $item['h2'][] = $e->plaintext;
     $num++;
 }
 echo "H2($num)<br>";
@@ -88,6 +104,7 @@ echo $texth2;
 $num = 0;
 foreach($html->find('h3') as $e){
     $texth3 .= '<li>' . $e->plaintext . '</li>';
+    $item['h3'][] = $e->plaintext;
     $num++;
 }
 echo "H3($num)<br>";
@@ -98,6 +115,7 @@ echo $texth3;
 $num = 0;
 foreach($html->find('h4') as $e){
     $texth4 .= '<li>' . $e->plaintext . '</li>';
+    $item['h4'][] = $e->plaintext;
     $num++;
 }
 echo "H4($num)<br>";
@@ -107,6 +125,7 @@ echo $texth4;
 $num = 0;
 foreach($html->find('h5') as $e){
     $texth5 .= '<li>' . $e->plaintext . '</li>';
+    $item['h5'][] = $e->plaintext;
     $num++;
 }
 echo "H5($num)<br>";
@@ -138,9 +157,23 @@ foreach($html->find('meta[property=og:description]') as $e)
     echo $e->content . '<br>';
 
 echo "image<br>";
-foreach($html->find('meta[property=og:image]') as $e)
+foreach($html->find('meta[property=og:image]') as $e){
+
     echo $e->content . '<br>';
     
+    $location_img = 'image/'.$folder.'/coverpage.jpg';
+        
+    if(!file_exists($location_img)){
+
+        echo "<p>PUT $location_img, ".$e->content."</p>";
+        file_put_contents($location_img, file_get_contents($e->content));
+        //Copy to destination
+
+        $item['img'][] = $e->content;
+        $item['img2'][] = $location_img;
+    }
+}
+
 echo "<hr>";
 
 // find twitter
@@ -201,18 +234,23 @@ foreach($html->find('div.contents img') as $e){
             mkdir('image/'.$folder);
         }
 
+        $i++;
+
         $filename = 'img-';
 
         //$location_img = 'image/'.$folder.'/'.md5(rand(100, 999)).'.jpg';
         $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
         
         if(!file_exists($location_img)){
+
+            echo "<p>PUT $location_img, ".$e->src."</p>";
             file_put_contents($location_img, file_get_contents($e->src));
             //Copy to destination
         }
 
+        $item['img'][] = $e->src;
         $item['img2'][] = $location_img;
-		$i++;
+		// $i++;
         
         echo 'path = '. $e->src . '<br>';
         echo 'alt = '. $e->alt . '<br>';
@@ -225,14 +263,17 @@ foreach($html->find('div.contents img') as $e){
 echo "<hr>";
 // find content
 echo "Content<br>";
-foreach($html->find('div.contents div.blurb-detail') as $e)
+foreach($html->find('div.contents div.blurb-detail') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
+    $item['content'] = $e->plaintext;
+}
 
-foreach($html->find('div.contents div.detail') as $e)
+foreach($html->find('div.contents div.detail') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
-
+    $item['content'] .= $e->plaintext;
+}
 
 
 echo "<hr>";
@@ -252,5 +293,80 @@ $perc = ($textlen/$fulllen)*100;
 
 echo "($textlen)/($fulllen) = $perc";
 echo "<hr>";
-echo $bodyplaintext;
+// echo $bodyplaintext;
+
+
+$data_text = '';
+
+if($item){
+
+	/*if($item['text']){
+		$alltext =count($item['text']);
+		for($i = 0; $i < $alltext; $i++) {
+			echo '<p>'.$item['text'][$i].'</p>';
+
+			if(trim($item['text'][$i]) <> ""){
+				if($i == 0)
+					$data_text .= $item['text'][$i];
+				else
+					$data_text .= "<p>".$item['text'][$i]."</p>\n";
+			}
+		}
+
+		if($data_text != '')
+			SaveFiles($data_text."\n\n".$item['url'], $item['filesname']);
+	}*/
+
+    if($item['title']){
+        $data_text .= 'Title:'.$item['title'];
+        $data_text .= "\n";
+    }
+    if($item['description']){
+        $data_text .= 'Description:'.$item['description'];
+        $data_text .= "\n";
+    }
+    if($item['content']){
+        $data_text .= 'Content:'.$item['content'];
+    }
+    $data_text .= "\n";
+
+    $all =count($item['img2']);
+	for($i = 0; $i < $all; $i++) {
+
+        if($i == 0)
+            $data_text .= '
+            <img data-src="'.$item['img2'][$i].'" src="'.$item['img2'][$i].'" ><br>';
+        else
+            $data_text .= '
+            <img data-src="'.$item['img2'][$i].'" src="'.$item['img2'][$i].'" width="400"><br>';
+	}
+
+    $data_text .= "\n\n";
+    $all =count($item['img']);
+	for($i = 0; $i < $all; $i++) {
+
+        if($i == 0)
+            $data_text .= '
+            <img data-src="'.$item['img'][$i].'" src="'.$item['img'][$i].'" ><br>';
+        else
+            $data_text .= '
+            <img data-src="'.$item['img'][$i].'" src="'.$item['img'][$i].'" width="400"><br>';
+	}
+
+    $location_txt = 'image/'.$folder.'/news-detail.txt';
+
+    if($data_text != '')
+		SaveFiles($data_text."\n\n".$item['url'], $location_txt);
+
+}else{
+
+	echo "Can not read.";
+}
+
+function SaveFiles($data, $filename){
+	$objFopen=fopen($filename,'w');
+	fwrite($objFopen, $data);
+	fclose($objFopen);
+}
+
 ?>
