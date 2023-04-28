@@ -4,7 +4,7 @@
 	<meta charset="utf-8"/>
     <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport"/>
-	<title>Scraping komchadluek</title>
+	<title>Scraping thepeople</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,14 +18,14 @@
 	</style>
 </head>
 <body>
-    <h1>Scraping komchadluek</h1>
+    <h1>Scraping thepeople</h1>
 <?php
 include_once('../simple_html_dom.php');
 
-// $get_data_url = 'https://www.komchadluek.net/';
-// $get_data_url = 'https://www.komchadluek.net/entertainment/thai-entertainment/547481';
+// $get_data_url = 'https://www.thepeople.co/';
+// $get_data_url = 'https://www.thepeople.co/read/sports/1819';
 
-$id = 547481;
+$id = 1819;
 $i = 0;
 $item = array();
 
@@ -51,17 +51,18 @@ if(isset($_POST['folder'])){
 echo '<form class="row g-3" method="POST">
 <div class="mb-3">
     <label for="URL" class="form-label">URL</label>
-    <input type="text" class="form-control" name="web_url" value="'.$url.'" placeholder="ex. https://www.komchadluek.net/entertainment/thai-entertainment/547481">
+    <input type="text" class="form-control" name="web_url" value="'.$url.'" placeholder="ex. https://www.thepeople.co/read/sports/1819">
 </div>
 <div class="mb-3">
     <label for="folder" class="form-label">folder</label>
-    <input type="text" class="form-control" name="folder" value="'.$folder.'" placeholder="ex. 547481">
+    <input type="text" class="form-control" name="folder" value="'.$folder.'" placeholder="ex. 1819">
 </div>
 <button type="submit" class="btn btn-primary mb-3">Submit</button>
 <hr>
 </form>';
 
-$folder = 'komchadluek-'.$folder;
+$folder = 'thepeople-'.$folder;
+
 
 // echo $url."<br>";
 // echo $folder."<hr>";
@@ -264,7 +265,7 @@ foreach($html->find('link[rel=apple-touch-icon]') as $e)
 
 echo "<hr>";
 echo "Image<br>";
-foreach($html->find('div#article-image img') as $e){
+foreach($html->find('div.content-feature img') as $e){
     if(trim($e->src) != ''){
 
         //************** save picture ****************
@@ -276,13 +277,12 @@ foreach($html->find('div#article-image img') as $e){
 
         $filename = 'img-';
 
-
         $ext = pathinfo($e->src, PATHINFO_EXTENSION);
-
         //$location_img = 'image/'.$folder.'/'.md5(rand(100, 999)).'.jpg';
         // $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
         $location_img = 'image/'.$folder.'/cover-page.'.$ext;
 
+        
         if(!file_exists($location_img)){
 
             echo "<p>PUT $location_img, ".$e->src."</p>";
@@ -302,11 +302,10 @@ foreach($html->find('div#article-image img') as $e){
 
 }
 
-
 echo "<hr>";
 // find all image
 echo "Image<br>";
-foreach($html->find('div#page-detail img') as $e){
+foreach($html->find('div.contents img') as $e){
     if(trim($e->src) != ''){
 
         //************** save picture ****************
@@ -346,19 +345,19 @@ foreach($html->find('div#page-detail img') as $e){
 echo "<hr>";
 // find content
 echo "Content<br>";
-foreach($html->find('div#page-detail div#article-content div#section-1') as $e){
+foreach($html->find('div.contents div#paragraph-1') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
     $item['content'] = $e->plaintext;
 }
 
-foreach($html->find('div#page-detail div#article-content div#section-2') as $e){
+foreach($html->find('div.contents div#paragraph-2') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
     $item['content'] .= $e->plaintext;
 }
 
-foreach($html->find('div#page-detail div#article-content div#section-3') as $e){
+foreach($html->find('div.contents div#paragraph-3') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
     $item['content'] .= $e->plaintext;
