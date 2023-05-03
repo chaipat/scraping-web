@@ -1,42 +1,23 @@
-<!-- <!DOCTYPE html> -->
-<html lang="th">
-    <head>
-	<meta charset="utf-8"/>
-    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport"/>
-	<title>Scraping bangkokbiz</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;300&display=swap" rel="stylesheet">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	<style>
-	body{
-		font-family: 'Kanit', sans-serif;
-	}
-	</style>
-</head>
-<body>
-    <div class="container">
-    <h1>Scraping bangkokbiz</h1>
 <?php
+header("Content-type: application/json; charset=utf-8");
+ob_start();
+
+$res = null;
 include_once('../simple_html_dom.php');
 
-// $get_data_url = 'https://www.bangkokbiznews.com/';
-// $get_data_url = 'https://www.bangkokbiznews.com/business/economic/1065166';
+// $get_data_url = 'https://www.thansettakij.com/';
+// $get_data_url = 'https://www.thansettakij.com/thailand-elections/election-analysis/562937';
 
-$id = 1065166;
+$id = 562937;
 $i = 0;
 $item = array();
 
 $now = date('c');
 // $url = $_GET['url'];
 
+if(isset($_POST['than_url'])){
 
-if(isset($_POST['bangkokbiz_url'])){
-
-    $url = $_POST['bangkokbiz_url'];
+    $url = $_POST['than_url'];
 }else{
 
     $url = '';
@@ -50,21 +31,21 @@ if(isset($_POST['folder'])){
     $folder = '';
 }
 
+/*
 echo '<form class="row g-3" method="POST">
 <div class="mb-3">
     <label for="URL" class="form-label">URL</label>
-    <input type="text" class="form-control" name="bangkokbiz_url" value="'.$url.'" placeholder="ex. https://www.bangkokbiznews.com/business/economic/1065166">
+    <input type="text" class="form-control" name="than_url" value="'.$url.'" placeholder="ex. https://www.thansettakij.com/thailand-elections/election-analysis/562937">
 </div>
 <div class="mb-3">
     <label for="folder" class="form-label">folder</label>
-    <input type="text" class="form-control" name="folder" value="'.$folder.'" placeholder="ex. 1065166">
+    <input type="text" class="form-control" name="folder" value="'.$folder.'" placeholder="ex. 562937">
 </div>
 <button type="submit" class="btn btn-primary mb-3">Submit</button>
 <hr>
-</form>';
+</form>';*/
 
-$folder = 'bangkokbiz-'.$folder;
-
+$folder = 'thansettakij-'.$folder;
 
 // echo $url."<br>";
 // echo $folder."<hr>";
@@ -91,44 +72,44 @@ $html = file_get_html($url);
 // die();
 
 // find title
-echo "Title<br>";
+// echo "Title<br>";
 foreach($html->find('title') as $e){
-    echo $e->innertext . '<br>';
+    // echo $e->innertext . '<br>';
     $item['title'] = $e->innertext;
 }
-echo "<hr>";
+// echo "<hr>";
 
 // find description
-echo "Description<br>";
+// echo "Description<br>";
 foreach($html->find('meta[name=description]') as $e){
-    echo $e->content . '<br>';
+    // echo $e->content . '<br>';
     $item['description'] = $e->content;
 }
-echo "<hr>";
+// echo "<hr>";
 
 // find keywords
-echo "Keywords<br>";
+// echo "Keywords<br>";
 foreach($html->find('meta[name=keywords]') as $e){
-    echo $e->content . '<br>';
+    // echo $e->content . '<br>';
     $item['keywords'] = $e->content;
 }
-echo "<hr>";
+// echo "<hr>";
 
 // find viewport
-echo "viewport<br>";
+// echo "viewport<br>";
 foreach($html->find('meta[name=viewport]') as $e){
-    echo $e->content . '<br>';
+    // echo $e->content . '<br>';
     $item['viewport'] = $e->content;
 }
-echo "<hr>";
+// echo "<hr>";
 
 // find canonical
-echo "Canonical<br>";
+// echo "Canonical<br>";
 foreach($html->find('link[rel=canonical]') as $e){
-    echo $e->href . '<br>';
+    // echo $e->href . '<br>';
     $item['canonical'] = $e->href;
 }
-echo "<hr>";
+// echo "<hr>";
 
 $texth1 = $texth2 = $texth3 = $texth4 = $texth5 = '';
 // find h1
@@ -138,8 +119,8 @@ foreach($html->find('h1') as $e){
     $item['h1'][] = $e->plaintext;
     $num++;
 }
-echo "H1($num)<br>";
-echo $texth1;
+// echo "H1($num)<br>";
+// echo $texth1;
 
 // find h2
 $num = 0;
@@ -148,8 +129,8 @@ foreach($html->find('h2') as $e){
     $item['h2'][] = $e->plaintext;
     $num++;
 }
-echo "H2($num)<br>";
-echo $texth2;
+// echo "H2($num)<br>";
+// echo $texth2;
 
 // find h3
 $num = 0;
@@ -158,8 +139,8 @@ foreach($html->find('h3') as $e){
     $item['h3'][] = $e->plaintext;
     $num++;
 }
-echo "H3($num)<br>";
-echo $texth3;
+// echo "H3($num)<br>";
+// echo $texth3;
 
 
 // find h4
@@ -169,8 +150,8 @@ foreach($html->find('h4') as $e){
     $item['h4'][] = $e->plaintext;
     $num++;
 }
-echo "H4($num)<br>";
-echo $texth4;
+// echo "H4($num)<br>";
+// echo $texth4;
 
 // find h5
 $num = 0;
@@ -179,16 +160,15 @@ foreach($html->find('h5') as $e){
     $item['h5'][] = $e->plaintext;
     $num++;
 }
-echo "H5($num)<br>";
-echo $texth5;
+// echo "H5($num)<br>";
+// echo $texth5;
 
-echo "<hr>";
+// echo "<hr>";
 
 // echo "<hr>";
 // // find all image with full tag
 // foreach($html->find('div.postarea div.inner img') as $e)
 //     echo $e->outertext . '<br>';
-
 
 // remove all image
 // foreach($html->find('h1') as $e)
@@ -197,28 +177,30 @@ echo "<hr>";
 // echo $html;
 
 
-
 // find facebook
-echo "facebook<br>title<br>";
+/*
+echo "<b>Facebook</b><br>Title<br>";
 foreach($html->find('meta[property=og:title]') as $e)
     echo $e->content . '<br>';
 
 echo "description<br>";
 foreach($html->find('meta[property=og:description]') as $e)
     echo $e->content . '<br>';
+*/
 
-echo "image<br>";
+
+// echo "image<br>";
 foreach($html->find('meta[property=og:image]') as $e){
 
-    echo $e->content . '<br>';
+    // echo $e->content . '<br>';
     
     $ext = pathinfo($e->content, PATHINFO_EXTENSION);
     $location_img = 'image/'.$folder.'/coverpage.'.$ext;
         
     if(!file_exists($location_img)){
 
-        echo "<p>PUT $location_img, ".$e->content."</p>";
-        file_put_contents($location_img, file_get_contents($e->content));
+        // echo "<p>PUT $location_img, ".$e->content."</p>";
+        // file_put_contents($location_img, file_get_contents($e->content));
         //Copy to destination
 
         $item['img'][] = $e->content;
@@ -226,10 +208,11 @@ foreach($html->find('meta[property=og:image]') as $e){
     }
 }
 
-echo "<hr>";
+// echo "<hr>";
 
 // find twitter
-echo "twitter<br>title<br>";
+/*
+echo "<b>Twitter</b><br>title<br>";
 foreach($html->find('meta[property=twitter:title]') as $e)
     echo $e->content . '<br>';
 
@@ -250,6 +233,7 @@ foreach($html->find('meta[name=twitter:site]') as $e)
     echo $e->content . '<br>';
 
 echo "<hr>";
+*/
 
 
 // find schema
@@ -259,24 +243,34 @@ echo "<hr>";
     // [@type=Organization]
 
 
-echo "favicon<br>";
-foreach($html->find('link[rel=shortcut icon]') as $e)
-    echo $e->href . '<br>';
+// echo "favicon<br>";
+foreach($html->find('link[rel=shortcut icon]') as $e){
+    // echo $e->href . '<br>';
+    $item['favicon'] = $e->href;
+}
     
+/*
 //<link rel="mask-icon" href="https://medias.thansettakij.com/images/logo.png" color="#000000" />
-foreach($html->find('link[rel=mask-icon]') as $e)
-    echo $e->href . '<br>';
-foreach($html->find('link[rel=apple-touch-icon]') as $e)
-    echo $e->href . '<br>';
+foreach($html->find('link[rel=mask-icon]') as $e){
+    // echo $e->href . '<br>';
+    $item['favicon'] = $e->href;
+}
+    
+foreach($html->find('link[rel=apple-touch-icon]') as $e){
+    // echo $e->href . '<br>';
+    $item['favicon'] = $e->href;
+}
+*/
+    
     
 // echo "Encoding<br>";
 //     foreach($html->find('meta') as $e)
 //         echo $e->innertext . '<br>';
 
-echo "<hr>";
-// find content-feature-image
-echo "Image<br>";
-foreach($html->find('div.content-feature-image img') as $e){
+// echo "<hr>";
+// find all image
+// echo "Image<br>";
+foreach($html->find('div.contents img') as $e){
     if(trim($e->src) != ''){
 
         //************** save picture ****************
@@ -292,13 +286,12 @@ foreach($html->find('div.content-feature-image img') as $e){
 
         $ext = pathinfo($e->src, PATHINFO_EXTENSION);
         //$location_img = 'image/'.$folder.'/'.md5(rand(100, 999)).'.jpg';
-        $location_img = 'image/'.$folder.'/'.$filename.$i.'.'.$ext;
         // $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
-
+        $location_img = 'image/'.$folder.'/'.$filename.$i.'.'.$ext;
         
         if(!file_exists($location_img)){
 
-            echo "<p>PUT $location_img, ".$e->src."</p>";
+            // echo "<p>PUT $location_img, ".$e->src."</p>";
             // file_put_contents($location_img, file_get_contents($e->src));
             //Copy to destination
         }
@@ -307,85 +300,31 @@ foreach($html->find('div.content-feature-image img') as $e){
         $item['img2'][] = $location_img;
 		// $i++;
         
-        echo 'path = '. $e->src . '<br>';
-        echo 'alt = '. $e->alt . '<br>';
-        echo 'title = '. $e->title . '<br>';
-        echo '<hr>';        
+        // echo 'path = '. $e->src . '<br>';
+        // echo 'alt = '. $e->alt . '<br>';
+        // echo 'title = '. $e->title . '<br>';
+        // echo '<hr>';        
     }
 
 }
 
-
-echo "<hr>";
-// find all image
-echo "Image<br>";
-foreach($html->find('div.content-detail img') as $e){
-    if(trim($e->src) != ''){
-
-        //************** save picture ****************
-        $arr = explode("/", trim($e->src));
-
-        if(!is_dir('image/'.$folder)){
-            mkdir('image/'.$folder);
-        }
-
-        $i++;
-
-        $filename = 'img-';
-
-        $ext = pathinfo($e->src, PATHINFO_EXTENSION);
-        //$location_img = 'image/'.$folder.'/'.md5(rand(100, 999)).'.jpg';
-        // $location_img = 'image/'.$folder.'/'.$filename.$i.'.'.$ext;
-        $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
-
-        
-        if(!file_exists($location_img)){
-
-            echo "<p>PUT $location_img, ".$e->src."</p>";
-            file_put_contents($location_img, file_get_contents($e->src));
-            //Copy to destination
-        }
-
-        $item['img'][] = $e->src;
-        $item['img2'][] = $location_img;
-		// $i++;
-        
-        echo 'path = '. $e->src . '<br>';
-        echo 'alt = '. $e->alt . '<br>';
-        echo 'title = '. $e->title . '<br>';
-        echo '<hr>';        
-    }
-
-}
-
-echo "<hr>";
+// echo "<hr>";
 // find content
-echo "Content<br>";
-foreach($html->find('div#contents h2.content-blurb') as $e){
+// echo "Content<br>";
+foreach($html->find('div.contents div.blurb-detail') as $e){
     // echo $e->plaintext . '<br>';
-    echo $e->innertext . '<br>';
+    // echo $e->innertext . '<br>';
     $item['content'] = $e->plaintext;
 }
 
-foreach($html->find('div#contents div#paragraph-1') as $e){
+foreach($html->find('div.contents div.detail') as $e){
     // echo $e->plaintext . '<br>';
-    echo $e->innertext . '<br>';
+    // echo $e->innertext . '<br>';
     $item['content'] .= $e->plaintext;
 }
 
-foreach($html->find('div#contents div#paragraph-2') as $e){
-    // echo $e->plaintext . '<br>';
-    echo $e->innertext . '<br>';
-    $item['content'] .= $e->plaintext;
-}
 
-foreach($html->find('div#contents div#paragraph-3') as $e){
-    // echo $e->plaintext . '<br>';
-    echo $e->innertext . '<br>';
-    $item['content'] .= $e->plaintext;
-}
-
-echo "<hr>";
+// echo "<hr>";
 foreach($html->find('body') as $e){
     $bodytext = $e->innertext;
     $bodyplaintext = $e->plaintext;
@@ -400,31 +339,13 @@ $textlen = strlen($bodyplaintext);
 $fulllen = $fulllen - $textlen;
 $perc = ($textlen/$fulllen)*100;
 
-echo "($textlen)/($fulllen) = $perc";
-echo "<hr>";
+// echo "($textlen)/($fulllen) = $perc";
+// echo "<hr>";
 // echo $bodyplaintext;
 
-
 $data_text = '';
-
+/*
 if($item){
-
-	/*if($item['text']){
-		$alltext =count($item['text']);
-		for($i = 0; $i < $alltext; $i++) {
-			echo '<p>'.$item['text'][$i].'</p>';
-
-			if(trim($item['text'][$i]) <> ""){
-				if($i == 0)
-					$data_text .= $item['text'][$i];
-				else
-					$data_text .= "<p>".$item['text'][$i]."</p>\n";
-			}
-		}
-
-		if($data_text != '')
-			SaveFiles($data_text."\n\n".$item['url'], $item['filesname']);
-	}*/
 
     if($item['title']){
         $data_text .= 'Title:'.$item['title'];
@@ -471,6 +392,7 @@ if($item){
 
 	echo "Can not read.";
 }
+*/
 
 function SaveFiles($data, $filename){
 	$objFopen=fopen($filename,'w');
@@ -478,10 +400,9 @@ function SaveFiles($data, $filename){
 	fclose($objFopen);
 }
 
-?>
-    </div>
-<script defer src="https://kit.fontawesome.com/425fce21f6.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-</body>
-</html>
+ob_clean();
+$res = $item;
+echo json_encode($res);
+ob_end_flush();
+?>

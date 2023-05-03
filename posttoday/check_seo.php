@@ -4,7 +4,7 @@
 	<meta charset="utf-8"/>
     <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport"/>
-	<title>Scraping bangkokbiz</title>
+	<title>Scraping posttoday</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,24 +19,23 @@
 </head>
 <body>
     <div class="container">
-    <h1>Scraping bangkokbiz</h1>
+    <h1>Scraping posttoday</h1>
 <?php
 include_once('../simple_html_dom.php');
 
-// $get_data_url = 'https://www.bangkokbiznews.com/';
-// $get_data_url = 'https://www.bangkokbiznews.com/business/economic/1065166';
+// $get_data_url = 'https://www.posttoday.com/';
+// $get_data_url = 'https://www.posttoday.com/international-news/693780';
 
-$id = 1065166;
+$id = 693780;
 $i = 0;
 $item = array();
 
 $now = date('c');
 // $url = $_GET['url'];
 
+if(isset($_POST['posttoday_url'])){
 
-if(isset($_POST['bangkokbiz_url'])){
-
-    $url = $_POST['bangkokbiz_url'];
+    $url = $_POST['posttoday_url'];
 }else{
 
     $url = '';
@@ -53,17 +52,17 @@ if(isset($_POST['folder'])){
 echo '<form class="row g-3" method="POST">
 <div class="mb-3">
     <label for="URL" class="form-label">URL</label>
-    <input type="text" class="form-control" name="bangkokbiz_url" value="'.$url.'" placeholder="ex. https://www.bangkokbiznews.com/business/economic/1065166">
+    <input type="text" class="form-control" name="posttoday_url" value="'.$url.'" placeholder="ex. https://www.posttoday.com/international-news/693780">
 </div>
 <div class="mb-3">
     <label for="folder" class="form-label">folder</label>
-    <input type="text" class="form-control" name="folder" value="'.$folder.'" placeholder="ex. 1065166">
+    <input type="text" class="form-control" name="folder" value="'.$folder.'" placeholder="ex. 693780">
 </div>
 <button type="submit" class="btn btn-primary mb-3">Submit</button>
 <hr>
 </form>';
 
-$folder = 'bangkokbiz-'.$folder;
+$folder = 'posttoday-'.$folder;
 
 
 // echo $url."<br>";
@@ -199,7 +198,7 @@ echo "<hr>";
 
 
 // find facebook
-echo "facebook<br>title<br>";
+echo "<b>Facebook</b><br>Title<br>";
 foreach($html->find('meta[property=og:title]') as $e)
     echo $e->content . '<br>';
 
@@ -229,7 +228,7 @@ foreach($html->find('meta[property=og:image]') as $e){
 echo "<hr>";
 
 // find twitter
-echo "twitter<br>title<br>";
+echo "<b>Twitter</b><br>title<br>";
 foreach($html->find('meta[property=twitter:title]') as $e)
     echo $e->content . '<br>';
 
@@ -274,52 +273,9 @@ foreach($html->find('link[rel=apple-touch-icon]') as $e)
 //         echo $e->innertext . '<br>';
 
 echo "<hr>";
-// find content-feature-image
-echo "Image<br>";
-foreach($html->find('div.content-feature-image img') as $e){
-    if(trim($e->src) != ''){
-
-        //************** save picture ****************
-        $arr = explode("/", trim($e->src));
-
-        if(!is_dir('image/'.$folder)){
-            mkdir('image/'.$folder);
-        }
-
-        $i++;
-
-        $filename = 'img-';
-
-        $ext = pathinfo($e->src, PATHINFO_EXTENSION);
-        //$location_img = 'image/'.$folder.'/'.md5(rand(100, 999)).'.jpg';
-        $location_img = 'image/'.$folder.'/'.$filename.$i.'.'.$ext;
-        // $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
-
-        
-        if(!file_exists($location_img)){
-
-            echo "<p>PUT $location_img, ".$e->src."</p>";
-            // file_put_contents($location_img, file_get_contents($e->src));
-            //Copy to destination
-        }
-
-        $item['img'][] = $e->src;
-        $item['img2'][] = $location_img;
-		// $i++;
-        
-        echo 'path = '. $e->src . '<br>';
-        echo 'alt = '. $e->alt . '<br>';
-        echo 'title = '. $e->title . '<br>';
-        echo '<hr>';        
-    }
-
-}
-
-
-echo "<hr>";
 // find all image
 echo "Image<br>";
-foreach($html->find('div.content-detail img') as $e){
+foreach($html->find('div.contents img') as $e){
     if(trim($e->src) != ''){
 
         //************** save picture ****************
@@ -335,9 +291,8 @@ foreach($html->find('div.content-detail img') as $e){
 
         $ext = pathinfo($e->src, PATHINFO_EXTENSION);
         //$location_img = 'image/'.$folder.'/'.md5(rand(100, 999)).'.jpg';
-        // $location_img = 'image/'.$folder.'/'.$filename.$i.'.'.$ext;
-        $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
-
+        // $location_img = 'image/'.$folder.'/'.$filename.$i.'.jpg';
+        $location_img = 'image/'.$folder.'/'.$filename.$i.'.'.$ext;
         
         if(!file_exists($location_img)){
 
@@ -361,29 +316,18 @@ foreach($html->find('div.content-detail img') as $e){
 echo "<hr>";
 // find content
 echo "Content<br>";
-foreach($html->find('div#contents h2.content-blurb') as $e){
+foreach($html->find('div.contents div.blurb-detail') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
     $item['content'] = $e->plaintext;
 }
 
-foreach($html->find('div#contents div#paragraph-1') as $e){
+foreach($html->find('div.contents div.detail') as $e){
     // echo $e->plaintext . '<br>';
     echo $e->innertext . '<br>';
     $item['content'] .= $e->plaintext;
 }
 
-foreach($html->find('div#contents div#paragraph-2') as $e){
-    // echo $e->plaintext . '<br>';
-    echo $e->innertext . '<br>';
-    $item['content'] .= $e->plaintext;
-}
-
-foreach($html->find('div#contents div#paragraph-3') as $e){
-    // echo $e->plaintext . '<br>';
-    echo $e->innertext . '<br>';
-    $item['content'] .= $e->plaintext;
-}
 
 echo "<hr>";
 foreach($html->find('body') as $e){

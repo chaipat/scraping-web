@@ -18,6 +18,7 @@
 	</style>
 </head>
 <body>
+    <div class="container">
     <h1>Scraping komchadluek</h1>
 <?php
 include_once('../simple_html_dom.php');
@@ -32,9 +33,9 @@ $item = array();
 $now = date('c');
 // $url = $_GET['url'];
 
-if(isset($_POST['web_url'])){
+if(isset($_POST['kom_url'])){
 
-    $url = $_POST['web_url'];
+    $url = $_POST['kom_url'];
 }else{
 
     $url = '';
@@ -51,7 +52,7 @@ if(isset($_POST['folder'])){
 echo '<form class="row g-3" method="POST">
 <div class="mb-3">
     <label for="URL" class="form-label">URL</label>
-    <input type="text" class="form-control" name="web_url" value="'.$url.'" placeholder="ex. https://www.komchadluek.net/entertainment/thai-entertainment/547481">
+    <input type="text" class="form-control" name="kom_url" value="'.$url.'" placeholder="ex. https://www.komchadluek.net/entertainment/thai-entertainment/547481">
 </div>
 <div class="mb-3">
     <label for="folder" class="form-label">folder</label>
@@ -119,6 +120,13 @@ foreach($html->find('meta[name=viewport]') as $e){
 }
 echo "<hr>";
 
+// find canonical
+echo "Canonical<br>";
+foreach($html->find('link[rel=canonical]') as $e){
+    echo $e->href . '<br>';
+    $item['canonical'] = $e->href;
+}
+echo "<hr>";
 
 $texth1 = $texth2 = $texth3 = $texth4 = $texth5 = '';
 // find h1
@@ -458,6 +466,7 @@ function SaveFiles($data, $filename){
 }
 
 ?>
+    </div>
 <script defer src="https://kit.fontawesome.com/425fce21f6.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
