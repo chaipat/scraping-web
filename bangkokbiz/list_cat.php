@@ -61,12 +61,12 @@
             <tr>
                 <td>Home</td>
                 <td></td>
-                <td id="url1">https://www.bangkokbiznews.com/</td>
-                <td><div id="canonical1"></div></td>
-                <td><div id="title1"></div></td>
-                <td><div id="description1"></div></td>
-                <td><div id="keyword1"></div></td>
-                <td><div id="h1_1"></div></td>
+                <td id="url0">https://www.bangkokbiznews.com/</td>
+                <td><div id="canonical0"></div></td>
+                <td><div id="title0"></div></td>
+                <td><div id="description0"></div></td>
+                <td><div id="keyword0"></div></td>
+                <td><div id="h1_0"></div></td>
                 <td></td>
             </tr>
             
@@ -78,7 +78,7 @@
 <script>
     $(document).ready(function() {
         init_cat();
-        get_data(1);
+        get_data(0);
 	});
 
 function init_cat(){
@@ -112,7 +112,7 @@ function init_cat(){
 
                 curlink = base_url + link;
 
-                $('#table-list').append('<tr><td>' + nameTh + '</td><td></td><td id="url' + catid + '">' + curlink + '</td><td><div id="canonical' + catid + '"></div></td><td><div id="title' + catid + '"></div></td><td><div id="description' + catid + '"></div></td><td><div id="keyword' + catid + '"></div></td><td><div id="h1_' + catid + '"></div></td><td></td></tr>');
+                $('#table-list').append('<tr><td>' + nameTh + '</td><td></td><td id="url' + catid + '">' + curlink + '</td><td><div id="canonical' + catid + '"></div></td><td><div id="title' + catid + '"><a href="javascript:void(0);" onclick="get_data(' + catid + ')">Get Cat</a></div></td><td><div id="description' + catid + '"></div></td><td><div id="keyword' + catid + '"></div></td><td><div id="h1_' + catid + '"></div></td><td></td></tr>');
                 
                 setTimeout(get_data(catid), delay);
                 delay = delay + 200;
@@ -133,9 +133,9 @@ function init_cat(){
                     console.log('nameTh', sub[j].nameTh);
                     console.log('link', sub[j].link.trim());
 
-                    $('#table-list').append('<tr><td></td><td>' + nameTh + '</td><td id="url' + subcatid + '">' + curlink + '</td><td><div id="canonical' + subcatid + '"></div></td><td><div id="title' + subcatid + '"></div></td><td><div id="description' + subcatid + '"></div></td><td><div id="keyword' + subcatid + '"></div></td><td><div id="h1_' + subcatid + '"></div></td><td></td></tr>');
+                    $('#table-list').append('<tr><td></td><td>' + nameTh + '</td><td id="url' + catid + '-' + subcatid + '">' + curlink + '</td><td><div id="canonical' + catid + '-' + subcatid + '"></div></td><td><div id="title' + catid + '-' + subcatid + '"><a href="javascript:void(0);" onclick="get_data(' + catid + '-' + subcatid + ')">Get SubCat</a></div></td><td><div id="description' + catid + '-' + subcatid + '"></div></td><td><div id="keyword' + catid + '-' + subcatid + '"></div></td><td><div id="h1_' + catid + '-' + subcatid + '"></div></td><td></td></tr>');
                     
-                    setTimeout(get_data(subcatid), delay);
+                    setTimeout(get_data(catid + '-' + subcatid), delay);
                     delay = delay + 200;
                 }
 

@@ -99,7 +99,9 @@ $texth1 = $texth2 = $texth3 = $texth4 = $texth5 = '';
 // find h1
 $num = 0;
 foreach($html->find('h1') as $e){
-    $texth1 .= '<li>' . $e->plaintext . '</li>';
+
+    // echo $texth1 .= '<li>' . $e->plaintext . '</li>';
+    // echo $texth1 .= 'H1 <li>' . $e->innertext . '</li>';
     $item['h1'][] = $e->plaintext;
     $num++;
 }

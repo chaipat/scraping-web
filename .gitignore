@@ -32,3 +32,17 @@ composer.lock
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+
+
+#ignore images
+bangkokbiz/image
+komchadluek/image
+thansettakij/image
+thepeople/image
+nationtv/image
+posttoday/image
+springnews/image
+thainews/image
+thenationth/image
+tnews/image
+khobsanam/image
